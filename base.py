@@ -23,7 +23,7 @@ def displayLayer(u, l):
 		print(displayedRow)
 
 # placement
-def placePiece(c, piece, displayDetails=False):
+def placePiece(c, piece, displayDetails=True, displayEffectedLayer=True):
 	# default values to go from
 	pU = universes-1
 	pL = layers-1
@@ -38,16 +38,14 @@ def placePiece(c, piece, displayDetails=False):
 	while str(board[pU][pL][pR-1][c]) == '-' and pR > 0:
 		pR -= 1
 
-
-	if displayDetails:
-		print('[{}] Placed at Column: {}, Landed at: ({},{},{},{})'.format(piece, c, pU, pL, pR, c))
 	# place the piece on the actual board
 	board[pU][pL][pR][c] = piece
 
+	# extra info to print
+	if displayDetails:
+		print('[{}] Placed at Column: {}, Landed at: ({},{},{},{})'.format(piece, c, pU, pL, pR, c))
+	if displayEffectedLayer:
+		displayLayer(pU,pL)
 
-# place 193 tiles in column 1, transending the row, layer and universe
 for _ in range(193):
-	placePiece(1, 'X')
-
-displayLayer(0,0)
-displayLayer(3,6)
+	placePiece(3,'X')
