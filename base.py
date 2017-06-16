@@ -1,6 +1,7 @@
 import numpy as np
 
 #  init board
+connectAim = 5
 universes = 7
 layers = 7
 rows = 7
@@ -8,15 +9,13 @@ columns = 7
 board = np.array([[[['-']*columns]*layers]*rows]*columns)
 
 def main():
-	for _ in range(20):
+	for _ in range(50):
 		offerPlacement('X')
-		print(isWinner('X'))
 		offerPlacement('O')
-		print(isWinner('O'))
 
 # display a layer (2D array)
 def displayLayer(u, l):
-	print('[  U-{} L-{}  ]'.format(u, l))
+	print('[  U-{} L-{}  ]'.format(u+1, l+1))
 	for r in range(rows-1,-1,-1):
 		displayedRow = ''
 		for c in range(columns):
@@ -44,18 +43,22 @@ def placePiece(c, piece, displayDetails=True, displayEffectedLayer=True):
 
 	# extra info to print
 	if displayDetails:
-		print('[{}] Placed at Column: {}, Landed at: ({},{},{},{})'.format(piece, c, pU, pL, pR, c))
+		print('[{}] Placed at Column: {}, Landed at: ({},{},{},{})'.format(piece, c+1, pU+1, pL+1, pR+1, c+1))
 	if displayEffectedLayer:
 		displayLayer(pU,pL)
+
+
+	if isWinner(piece):
+		print('{} has won!'.format(piece))
 
 def offerPlacement(piece):
 	while True:
 		try:
-			placement = min(input('Place [{}] in column: '.format(piece)),columns)
+			placement = max(min(input('Place [{}] in column: '.format(piece)),columns)-1,0)
 			placePiece(placement,piece)
 			break
 		except NameError:
-			print('Please enter a column (0-{})'.format(columns-1))
+			print('Please enter a column (1-{})'.format(columns))
 
 def checkForRow(piece, uDif, lDif, rDif, cDif):
 	for u in range(universes):
@@ -63,9 +66,15 @@ def checkForRow(piece, uDif, lDif, rDif, cDif):
 			for r in range(rows):
 				for c in range(columns):
 					# yeah i know this looks disgusting but it works so hey
-					if board[u+uDif*0][l+lDif*0][r+rDif*0][c+cDif*0] == piece and board[u+uDif*1][l+lDif*1][r+rDif*1][c+cDif*1] == piece and board[u+uDif*2][l+lDif*2][r+rDif*2][c+cDif*2] == piece and board[u+uDif*3][l+lDif*3][r+rDif*3][c+cDif*3] == piece:
-						return True
-
+					try:
+						isConnect = 1
+						for i in range(connectAim):
+							if board[u+uDif*i][l+lDif*i][r+rDif*i][c+cDif*i] != piece:
+								isConnect = 0
+								
+						return isConnect
+					except IndexError:
+						return None
 
 def isWinner(piece):
 	# types of relations:
@@ -101,7 +110,6 @@ def isWinner(piece):
 
 	# triple diagonals
 	if checkForRow(piece, 1, 1, 1, 1): return True
-
-
+	
 if __name__ == '__main__':
 	main()
