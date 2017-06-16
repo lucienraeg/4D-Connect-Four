@@ -47,5 +47,15 @@ def placePiece(c, piece, displayDetails=True, displayEffectedLayer=True):
 	if displayEffectedLayer:
 		displayLayer(pU,pL)
 
-for _ in range(193):
-	placePiece(3,'X')
+def offerPlacement(piece):
+	while True:
+		try:
+			placement = min(input('Place [{}] in column: '.format(piece)),columns)-1
+			placePiece(placement,piece)
+			break
+		except NameError:
+			print('Please enter a column (0-{})'.format(columns-1))
+
+for _ in range(6):
+	offerPlacement('X')
+	offerPlacement('O')
