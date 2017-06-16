@@ -1,17 +1,18 @@
 import numpy as np
-import random
 
-# game settings
+#  init board
 universes = 7
 layers = 7
 rows = 7
 columns = 7
-
 board = np.array([[[['-']*columns]*layers]*rows]*columns)
 
-# tiles are referenced like this:
-# board[universe, layer, row, column]
-# e.g: board[0, 4, 2, 3] is the 1st universe, 5th layer, 3rd row and 4th column
+def main():
+	for _ in range(20):
+		offerPlacement('X')
+		print(isWinner('X'))
+		offerPlacement('O')
+		print(isWinner('O'))
 
 # display a layer (2D array)
 def displayLayer(u, l):
@@ -50,12 +51,57 @@ def placePiece(c, piece, displayDetails=True, displayEffectedLayer=True):
 def offerPlacement(piece):
 	while True:
 		try:
-			placement = min(input('Place [{}] in column: '.format(piece)),columns)-1
+			placement = min(input('Place [{}] in column: '.format(piece)),columns)
 			placePiece(placement,piece)
 			break
 		except NameError:
 			print('Please enter a column (0-{})'.format(columns-1))
 
-for _ in range(6):
-	offerPlacement('X')
-	offerPlacement('O')
+def checkForRow(piece, uDif, lDif, rDif, cDif):
+	for u in range(universes):
+		for l in range(layers):
+			for r in range(rows):
+				for c in range(columns):
+					# yeah i know this looks disgusting but it works so hey
+					if board[u+uDif*0][l+lDif*0][r+rDif*0][c+cDif*0] == piece and board[u+uDif*1][l+lDif*1][r+rDif*1][c+cDif*1] == piece and board[u+uDif*2][l+lDif*2][r+rDif*2][c+cDif*2] == piece and board[u+uDif*3][l+lDif*3][r+rDif*3][c+cDif*3] == piece:
+						return True
+
+
+def isWinner(piece):
+	# types of relations:
+	''' 
+	+...  .+..  ..+.  ...+ 					(simple rows) (1D)
+	++..  .++.  ..++  +..+  +.+.  .+.+ 		(single diagonals) (2D)
+	+++.  ++.+  +.++  .+++					(double diagonals) (3D)
+	++++ 									(triple diagonals) (4D)
+
+	+ is up 1 each step
+	. same each step
+	'''
+
+	# simple rows
+	if checkForRow(piece, 1, 0, 0, 0): return True
+	if checkForRow(piece, 0, 1, 0, 1): return True
+	if checkForRow(piece, 0, 0, 1, 0): return True
+	if checkForRow(piece, 0, 0, 0, 1): return True
+
+	# simple diagonal
+	if checkForRow(piece, 1, 1, 0, 0): return True
+	if checkForRow(piece, 0, 1, 1, 0): return True
+	if checkForRow(piece, 0, 0, 1, 1): return True
+	if checkForRow(piece, 1, 0, 0, 1): return True
+	if checkForRow(piece, 1, 0, 1, 0): return True
+	if checkForRow(piece, 0, 1, 0, 1): return True
+
+	# double diagonals 
+	if checkForRow(piece, 1, 1, 1, 0): return True
+	if checkForRow(piece, 1, 1, 0, 1): return True
+	if checkForRow(piece, 1, 0, 1, 1): return True
+	if checkForRow(piece, 0, 1, 1, 1): return True
+
+	# triple diagonals
+	if checkForRow(piece, 1, 1, 1, 1): return True
+
+
+if __name__ == '__main__':
+	main()
