@@ -64,8 +64,13 @@ class Board:
 		Application.refreshBoardFrame()
 
 	def shiftSel(self, d4, d3):
+		if d3 == -2:
+			self.dim_sel[3] = 0
+		else:
+			self.dim_sel[3] += d3
+
+
 		self.dim_sel[4] += d4
-		self.dim_sel[3] += d3
 		Application.refreshBoardFrame()
 
 	def shiftSoftSel(self, d2, d1):
@@ -152,11 +157,11 @@ class Application(tk.Tk):
 		if Board.dim_sel[4] > 0: dim4Down_state = "normal"
 		if Board.dim_sel[4] < Board.dim_size[4]-1: dim4Up_state = "normal"
 
-		dim4Down = tk.Button(frame, state=dim4Down_state, text=" < ", bg="tan3", fg="white", activebackground="tan2", activeforeground="white", command = lambda: Board.shiftSel(-1, 0))
+		dim4Down = tk.Button(frame, state=dim4Down_state, text=" < ", bg="tan3", fg="white", activebackground="tan2", activeforeground="white", command = lambda: Board.shiftSel(-1, -2))
 		dim4Down.grid(column=4, row=0)
 		dim4= tk.Label(frame, text="{} / {}".format(Board.dim_sel[4]+1, Board.dim_size[4]), padx=6)
 		dim4.grid(column=5, row=0)
-		dim4Up = tk.Button(frame, state=dim4Up_state, text=" > ", bg="tan3", fg="white", activebackground="tan2", activeforeground="white", command = lambda: Board.shiftSel(1, 0))
+		dim4Up = tk.Button(frame, state=dim4Up_state, text=" > ", bg="tan3", fg="white", activebackground="tan2", activeforeground="white", command = lambda: Board.shiftSel(1, -2))
 		dim4Up.grid(column=6, row=0)
 
 	def refreshBoardFrame(self):
