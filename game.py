@@ -51,21 +51,47 @@ class Application(tk.Tk):
 		self.initBoardFrame()
 
 	def initBoardFrame(self):
-		self.boardCanvasWidth = Board.cell_size*Board.dim_size[1]
-		self.boardCanvasHeight = Board.cell_size*Board.dim_size[2]
+		self.boardCanvasWidth = Board.cell_size*Board.dim_size[1]+4
+		self.boardCanvasHeight = Board.cell_size*Board.dim_size[2]+4
 
 		self.boardFrame = tk.Frame(self)
 
 		self.boardLabel = tk.Label(self.boardFrame, text="Board {},{}".format(Board.dim_sel[4], Board.dim_sel[3]), font=self.FNT_SMALL_BOLD)
 		self.boardLabel.pack()
 
-		self.boardCanvas = tk.Canvas(self.boardFrame, width=self.boardCanvasWidth, height=self.boardCanvasHeight, bg="red")
+		self.boardCanvas = tk.Canvas(self.boardFrame, width=self.boardCanvasWidth, height=self.boardCanvasHeight, bg="tan4")
+		self.drawBoardSlice(Board.dim_sel[4], Board.dim_sel[3])
 		self.boardCanvas.pack()
 
+		self.boardNavigation = tk.Frame(self.boardFrame, width=self.boardCanvasWidth, height=48, bg="tan2")
+		self.drawBoardNavigation()
+		self.boardNavigation.pack()
+
 		self.boardFrame.grid(column=0, row=0)
+
+	def drawBoardSlice(self, d4, d3):
+		for d2 in range(Board.dim_size[2]):
+			for d1 in range(Board.dim_size[1]):
+
+				# fill color
+				if d1 == Board.dim_size[1]:
+					fill = "tan2"
+				else:
+					fill = "tan3"
+
+				# draw tile
+				x = d1*Board.cell_size
+				y = (Board.dim_size[2]-1-d2)*Board.cell_size
+
+				tileCoords = (x+6, y+6, x+34, y+34)
+				self.boardCanvas.create_rectangle(tileCoords, fill=fill, outline="black", width=2)
+
+	def drawBoardNavigation(self):
+		pass
+
 		
 
 
-Board = Board(1, 1, 4, 5) # d4, d3, d2, d1
+Board = Board(7, 7, 7, 7) # d4, d3, d2, d1
 Application = Application(Board)
 Application.mainloop()
