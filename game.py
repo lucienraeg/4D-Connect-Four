@@ -61,6 +61,8 @@ class Board:
 
 		self.turnNum += 1
 
+		Application.refreshBoardFrame()
+
 	def shiftSel(self, d4, d3):
 		self.dim_sel[4] += d4
 		self.dim_sel[3] += d3
@@ -89,6 +91,7 @@ class Application(tk.Tk):
 
 		self.boardCanvas = tk.Canvas(self.boardFrame, width=self.boardCanvasWidth, height=self.boardCanvasHeight, bg="tan4")
 		self.boardCanvas.bind("<Motion>", self.updateSoftCoords)
+		self.boardCanvas.bind("<Button-1>", self.onClick)
 		self.drawBoardSlice(Board.dim_sel[4], Board.dim_sel[3], self.boardCanvas)
 		self.boardCanvas.pack()
 
@@ -103,10 +106,11 @@ class Application(tk.Tk):
 			for d1 in range(Board.dim_size[1]):
 
 				# fill color
-				if d1 == Board.dim_size[1]:
-					fill = "tan2"
-				else:
-					fill = "tan3"
+				# if d1 == Board.dim_sel[1]:
+				# 	fill = "tan2"
+				# else:
+				# 	fill = "tan3"
+				fill = "tan3"
 
 				# draw tile
 				x = d1*Board.cell_size
@@ -174,10 +178,6 @@ class Application(tk.Tk):
 		self.turnsText = tk.Text(self.turnsFrame, width=17, height=15, background="white")
 		self.turnsText.pack()
 
-		# self.turnsScroll = tk.Scrollbar(self.turnsFrame)
-		# self.turnsScroll.pack(side="right", fill="y")
-		# self.turnsScroll.config(command=self.turnsText.yview)
-
 		self.turnsFrame.grid(column=1, row=0, sticky="w")
 
 	def toCoord(self, x):
@@ -189,10 +189,17 @@ class Application(tk.Tk):
 		d2 = self.toCoord(event.y)
 		Board.shiftSoftSel(d2, d1)
 
+	def onClick(self, event):
+		Board.placePiece(1, Board.dim_sel[1]+1)
+
+def main():
+	pass
+
 
 Board = Board(7, 7, 7, 7) # d4, d3, d2, d1
 Application = Application(Board)
 
-Board.randomizeBoard()
-
 Application.mainloop()
+
+while True:
+	main()
